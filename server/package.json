@@ -1,36 +1,36 @@
 {
-  "name": "fakebook-api",
-  "version": "1.0.0",
-  "description": "A facebook clone built using Node.js, React with hooks and Typescript. From The Odin Project.",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js --prefix server",
-    "server": "nodemon server.js --prefix server",
-    "client": "npm start --prefix ../client",
-    "clientinstall": "npm install --prefix ../client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mattegan111/fakebook.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mattegan111/fakebook/issues"
-  },
-  "homepage": "https://github.com/mattegan111/fakebook#readme",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "config": "^3.3.6",
-    "express": "^4.17.1",
-    "express-validator": "^6.12.2",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.0.10"
-  },
-  "devDependencies": {
-    "concurrently": "^6.3.0",
-    "nodemon": "^2.0.13"
-  }
+	"name": "fakebook-api",
+	"version": "1.0.0",
+	"description": "A facebook clone built using Node.js and React with hooks. From The Odin Project.",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js --prefix server",
+		"server": "nodemon server.js --prefix server",
+		"client": "npm start --prefix ../client",
+		"clientinstall": "npm install --prefix ../client",
+		"dev": "concurrently \"npm run server\" \"npm run client\""
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mattegan111/fakebook.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/mattegan111/fakebook/issues"
+	},
+	"homepage": "https://github.com/mattegan111/fakebook#readme",
+	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"config": "^3.3.6",
+		"express": "^4.17.1",
+		"express-validator": "^6.12.2",
+		"jsonwebtoken": "^8.5.1",
+		"mongoose": "^6.0.10"
+	},
+	"devDependencies": {
+		"concurrently": "^6.3.0",
+		"nodemon": "^2.0.13"
+	}
 }
