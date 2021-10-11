@@ -9,6 +9,9 @@ default.json
 /client/.env.test.local
 /client/.env.production.local
 
+# VS Code settings
+.vscode
+
 # Logs
 logs
 *.log
