@@ -1,3 +1,17 @@
+# mongoURI with password
+default.json
+
+# React Client
+/client/build
+.DS_store
+/client/.env.local
+/client/.env.development.local
+/client/.env.test.local
+/client/.env.production.local
+
+# VS Code settings
+.vscode
+
 # Logs
 logs
 *.log
