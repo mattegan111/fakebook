@@ -21,6 +21,11 @@ router.get(
 		const user = await User.findById(req.user.id).select(
 			'-password'
 		);
+		if (!user) {
+			return res
+				.status(400)
+				.json({ msg: 'User Does Not Exist' });
+		}
 		res.json(user);
 	})
 );
