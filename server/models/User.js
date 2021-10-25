@@ -37,9 +37,12 @@ const UserSchema = mongoose.Schema({
 	post: {
 		type: Array,
 	},
-	comments: {
-		type: Array,
-	},
+	comments: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Comment',
+		},
+	],
 });
 
 UserSchema.virtual('fullname').get(() => {
