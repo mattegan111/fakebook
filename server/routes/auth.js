@@ -49,7 +49,7 @@ router.post(
 
 		const { email, password } = req.body;
 
-		let user = await User.findOne({ email });
+		const user = await User.findOne({ email });
 
 		if (!user) {
 			return res
