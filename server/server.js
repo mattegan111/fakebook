@@ -6,6 +6,9 @@ const app = express();
 // Connect Database
 connectDB();
 
+// Init Middleware
+app.use(express.json({ extended: false }));
+
 app.get('/', (req, res) =>
 	res.json({
 		msg: 'Welcome to the fakebook API',
@@ -16,6 +19,12 @@ app.get('/', (req, res) =>
 app.use('/api/users', require('./routes/users'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/posts', require('./routes/posts'));
+
+// Error Handling
+app.use((err, req, res, next) => {
+	console.error(err);
+	res.status(500).send(err.message);
+});
 
 const PORT = process.env.PORT || 5000;
 
