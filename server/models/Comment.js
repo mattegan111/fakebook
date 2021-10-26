@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const PostSchema = mongoose.Schema({
+const CommentSchema = mongoose.Schema({
 	bodytext: {
 		type: String,
 		required: true,
@@ -30,4 +30,4 @@ const PostSchema = mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model('post', PostSchema);
+module.exports = mongoose.model('comment', CommentSchema);
