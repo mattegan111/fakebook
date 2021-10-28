@@ -19,7 +19,7 @@ router.get(
 	auth,
 	errorCatcher(async (req, res) => {
 		const posts = await Post.find({
-			author: req.user.id,
+			authorId: req.user.id,
 		}).sort({
 			date: 'desc',
 		});
@@ -55,7 +55,7 @@ router.post(
 
 		const post = new Post({
 			bodytext,
-			author: req.user.id,
+			authorId: req.user.id,
 		});
 
 		await post.save();
@@ -123,7 +123,7 @@ router.put(
 
 			res.json(post);
 		} else if (bodytext !== undefined) {
-			if (post.author.toString() !== req.user.id) {
+			if (post.authorId.toString() !== req.user.id) {
 				return res.status(403).json({ msg: 'Forbidden' });
 			}
 
@@ -155,7 +155,7 @@ router.delete(
 				.json({ msg: 'Post not found' });
 		}
 
-		if (post.author.toString() !== req.user.id) {
+		if (post.authorId.toString() !== req.user.id) {
 			return res.status(403).json({ msg: 'Forbidden' });
 		}
 
