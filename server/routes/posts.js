@@ -21,7 +21,7 @@ router.get(
 		const posts = await Post.find({
 			author: req.user.id,
 		}).sort({
-			date: -1,
+			date: 'desc',
 		});
 
 		if (!posts) {
