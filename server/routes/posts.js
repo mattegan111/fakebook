@@ -124,9 +124,7 @@ router.put(
 			res.json(post);
 		} else if (bodytext !== undefined) {
 			if (post.author.toString() !== req.user.id) {
-				return res
-					.status(401)
-					.json({ msg: 'Not authorized' });
+				return res.status(403).json({ msg: 'Forbidden' });
 			}
 
 			post = await Post.findByIdAndUpdate(
@@ -158,9 +156,7 @@ router.delete(
 		}
 
 		if (post.author.toString() !== req.user.id) {
-			return res
-				.status(401)
-				.json({ msg: 'Not authorized' });
+			return res.status(403).json({ msg: 'Forbidden' });
 		}
 
 		await Post.findByIdAndDelete(req.params.id);
