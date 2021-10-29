@@ -19,9 +19,9 @@ router.get(
 	auth,
 	errorCatcher(async (req, res) => {
 		const posts = await Post.find({
-			author: req.user.id,
+			authorId: req.user.id,
 		}).sort({
-			date: -1,
+			date: 'desc',
 		});
 
 		if (!posts) {
@@ -55,7 +55,7 @@ router.post(
 
 		const post = new Post({
 			bodytext,
-			author: req.user.id,
+			authorId: req.user.id,
 		});
 
 		await post.save();
@@ -70,21 +70,7 @@ router.put(
 	'/:id',
 	[
 		auth,
-		[
-			// If 'bodytext' is provided, it should not be empty
-			body('bodytext', 'Text is required')
-				.optional()
-				.not()
-				.isEmpty(),
-			// If 'like' is provided, it should not be empty
-			body(
-				'like',
-				'A User Id is required to like this post'
-			)
-				.optional()
-				.not()
-				.isEmpty(),
-		],
+		[body('bodytext', 'Text is required').not().isEmpty()],
 	],
 	errorCatcher(async (req, res) => {
 		const errors = validationResult(req);
@@ -94,7 +80,7 @@ router.put(
 				.json({ errors: errors.array() });
 		}
 
-		const { bodytext, like } = req.body;
+		const { bodytext } = req.body;
 
 		let post = await Post.findById(req.params.id);
 
@@ -104,41 +90,79 @@ router.put(
 				.json({ msg: 'Post not found' });
 		}
 
-		if (like !== undefined) {
-			if (post.likes.includes(like)) {
-				res.json({ msg: 'You already like this post' });
-			}
-
-			if (!ObjectId.isValid(like)) {
-				res.json({
-					msg: 'User Id is not valid',
-				});
-			}
-
-			post = await Post.findByIdAndUpdate(
-				req.params.id,
-				{ $push: { likes: like } },
-				{ new: true }
-			);
-
-			res.json(post);
-		} else if (bodytext !== undefined) {
-			if (post.author.toString() !== req.user.id) {
-				return res
-					.status(401)
-					.json({ msg: 'Not authorized' });
-			}
-
-			post = await Post.findByIdAndUpdate(
-				req.params.id,
-				{ bodytext },
-				{ new: true }
-			);
-
-			res.json(post);
-		} else {
-			res.json({ msg: 'Post update failed' });
+		if (post.authorId.toString() !== req.user.id) {
+			return res.status(403).json({ msg: 'Forbidden' });
 		}
+
+		post = await Post.findByIdAndUpdate(
+			req.params.id,
+			{ bodytext },
+			{ new: true }
+		);
+
+		res.json(post);
+	})
+);
+
+// @route   POST api/posts/:id/likes
+// @desc    Add like to post
+// @access  Private
+router.post(
+	'/:id/likes',
+	auth,
+	errorCatcher(async (req, res) => {
+		let post = await Post.findById(req.params.id);
+
+		if (!post) {
+			return res
+				.status(404)
+				.json({ msg: 'Post not found' });
+		}
+
+		if (post.likes.includes(ObjectId(req.user.id))) {
+			res.json({ msg: 'You already like this post' });
+		}
+
+		post = await Post.findByIdAndUpdate(
+			req.params.id,
+			{ $push: { likes: req.user.id } },
+			{ new: true }
+		);
+
+		res.json(post);
+	})
+);
+
+// @route 	DELETE api/posts/:id/likes
+// @desc		Remove like from post
+// @access	Private
+router.delete(
+	'/:id/likes',
+	auth,
+	errorCatcher(async (req, res) => {
+		let post = await Post.findById(req.params.id);
+
+		if (!post) {
+			return res
+				.status(404)
+				.json({ msg: 'Post not found' });
+		}
+
+		if (!post.likes.includes(ObjectId(req.user.id))) {
+			//TODO check if the ObjectId is necessary
+
+			return res.json({
+				msg: 'You already removed your like from this post',
+			});
+		}
+
+		post = await Post.findByIdAndUpdate(
+			req.params.id,
+			{ $pull: { likes: req.user.id } },
+			{ new: true }
+		);
+
+		res.json(post);
 	})
 );
 
@@ -157,10 +181,8 @@ router.delete(
 				.json({ msg: 'Post not found' });
 		}
 
-		if (post.author.toString() !== req.user.id) {
-			return res
-				.status(401)
-				.json({ msg: 'Not authorized' });
+		if (post.authorId.toString() !== req.user.id) {
+			return res.status(403).json({ msg: 'Forbidden' });
 		}
 
 		await Post.findByIdAndDelete(req.params.id);
