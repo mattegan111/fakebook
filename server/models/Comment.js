@@ -8,11 +8,13 @@ const CommentSchema = mongoose.Schema({
 
 	authorId: {
 		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
 		required: true,
 	},
 
 	post: {
 		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Post',
 		required: true,
 	},
 
