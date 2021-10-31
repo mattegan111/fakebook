@@ -38,11 +38,8 @@ router.get(
 // @access  Private
 router.post(
 	'/',
-	[
-		auth,
-		[body('bodytext', 'Text is required').not().isEmpty()],
-		[body('post', 'Post is required').not().isEmpty()],
-	],
+	auth,
+	[body('bodytext', 'Text is required').not().isEmpty()],
 	errorCatcher(async (req, res) => {
 		const errors = validationResult(req);
 		if (!errors.isEmpty()) {
@@ -52,6 +49,12 @@ router.post(
 		}
 
 		const { bodytext, post } = req.body;
+
+		if (!post) {
+			return res
+				.status(400)
+				.json({ msg: 'Post is required' });
+		}
 
 		const comment = new Comment({
 			bodytext,
