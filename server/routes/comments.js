@@ -18,7 +18,7 @@ router.get(
 	auth,
 	errorCatcher(async (req, res) => {
 		const comments = await Comment.find({
-			author: req.user.id,
+			authorId: req.user.id,
 		}).sort({
 			date: -1,
 		});
@@ -56,7 +56,7 @@ router.post(
 		const comment = new Comment({
 			bodytext,
 			post,
-			author: req.user.id,
+			authorId: req.user.id,
 		});
 
 		await comment.save();
@@ -124,7 +124,7 @@ router.put(
 
 			res.json(comment);
 		} else if (bodytext !== undefined) {
-			if (comment.author.toString() !== req.user.id) {
+			if (comment.authorId.toString() !== req.user.id) {
 				return res
 					.status(401)
 					.json({ msg: 'Not authorized' });
@@ -158,7 +158,7 @@ router.delete(
 				.json({ msg: 'Comment not found' });
 		}
 
-		if (comment.author.toString() !== req.user.id) {
+		if (comment.authorId.toString() !== req.user.id) {
 			return res
 				.status(401)
 				.json({ msg: 'Not authorized' });
