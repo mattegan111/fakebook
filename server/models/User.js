@@ -25,9 +25,12 @@ const UserSchema = mongoose.Schema({
 	friends: {
 		type: Array,
 	},
-	notifications: {
-		type: Array,
-	},
+	notifications: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Notification',
+		},
+	],
 	receivedfriendrequests: {
 		type: Array,
 	},
