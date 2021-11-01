@@ -178,18 +178,15 @@ router.delete(
 	'/:id',
 	auth,
 	errorCatcher(async (req, res) => {
-		const comment = await Comment.findById(req.params.id);
+		const comment = await Comment.findOne({
+			_id: req.params.id,
+			authorId: req.user.id,
+		});
 
 		if (!comment) {
 			return res
 				.status(404)
 				.json({ msg: 'Comment not found' });
-		}
-
-		if (comment.authorId.toString() !== req.user.id) {
-			return res
-				.status(401)
-				.json({ msg: 'Not authorized' });
 		}
 
 		await Comment.findByIdAndDelete(req.params.id);
