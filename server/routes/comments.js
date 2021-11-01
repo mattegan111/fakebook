@@ -71,24 +71,11 @@ router.post(
 // @desc    Update comment
 // @access  Private
 router.put(
+	//TODO consider using 'patch'
 	'/:id',
 	[
 		auth,
-		[
-			// If 'bodytext' is provided, it should not be empty
-			body('bodytext', 'Text is required')
-				.optional()
-				.not()
-				.isEmpty(),
-			// If 'like' is provided, it should not be empty
-			body(
-				'like',
-				'A User Id is required to like this comment'
-			)
-				.optional()
-				.not()
-				.isEmpty(),
-		],
+		body('bodytext', 'Text is required').not().isEmpty(),
 	],
 	errorCatcher(async (req, res) => {
 		const errors = validationResult(req);
@@ -98,7 +85,7 @@ router.put(
 				.json({ errors: errors.array() });
 		}
 
-		const { bodytext, like } = req.body;
+		const { bodytext } = req.body;
 
 		let comment = await Comment.findById(req.params.id);
 
@@ -108,41 +95,79 @@ router.put(
 				.json({ msg: 'Comment not found' });
 		}
 
-		if (like !== undefined) {
-			if (comment.likes.includes(like)) {
-				res.json({ msg: 'You already like this comment' });
-			}
-
-			if (!ObjectId.isValid(like)) {
-				res.json({
-					msg: 'User Id is not valid',
-				});
-			}
-
-			comment = await Comment.findByIdAndUpdate(
-				req.params.id,
-				{ $push: { likes: like } },
-				{ new: true }
-			);
-
-			res.json(comment);
-		} else if (bodytext !== undefined) {
-			if (comment.authorId.toString() !== req.user.id) {
-				return res
-					.status(401)
-					.json({ msg: 'Not authorized' });
-			}
-
-			comment = await Comment.findByIdAndUpdate(
-				req.params.id,
-				{ bodytext },
-				{ new: true }
-			);
-
-			res.json(comment);
-		} else {
-			res.json({ msg: 'Comment update failed' });
+		if (comment.authorId.toString() !== req.user.id) {
+			return res
+				.status(401)
+				.json({ msg: 'Not authorized' });
 		}
+
+		comment = await Comment.findByIdAndUpdate(
+			req.params.id,
+			{ bodytext },
+			{ new: true }
+		);
+
+		res.json(comment);
+	})
+);
+
+// @route   POST api/comments/:id/likes
+// @desc    Add like to comment
+// @access  Private
+router.post(
+	'/:id/likes',
+	auth,
+	errorCatcher(async (req, res) => {
+		let comment = await Comment.findById(req.params.id);
+
+		if (!comment) {
+			return res
+				.status(404)
+				.json({ msg: 'Comment not found' });
+		}
+
+		if (comment.likes.includes(ObjectId(req.user.id))) {
+			res.json({ msg: 'You already like this comment' });
+		}
+
+		comment = await Comment.findByIdAndUpdate(
+			req.params.id,
+			{ $push: { likes: req.user.id } },
+			{ new: true }
+		);
+
+		res.json(comment);
+	})
+);
+
+// @route 	DELETE api/comments/:id/likes
+// @desc		Remove like from comment
+// @access	Private
+router.delete(
+	'/:id/likes',
+	auth,
+	errorCatcher(async (req, res) => {
+		let comment = await Comment.findById(req.params.id);
+
+		if (!comment) {
+			return res
+				.status(404)
+				.json({ msg: 'Comment not found' });
+		}
+
+		if (!comment.likes.includes(ObjectId(req.user.id))) {
+			return res.json({
+				msg: 'You already removed your like from this comment',
+			});
+		}
+
+		comment = await Comment.findByIdAndUpdate(
+			req.params.id,
+			{ $pull: { likes: req.user.id } },
+			{ new: true }
+		);
+
+		res.json(comment);
 	})
 );
 
