@@ -15,7 +15,7 @@ router.get(
 		const notifications = await Notification.find({
 			receiver: req.user.id,
 		}).sort({
-			date: -1,
+			date: 'desc',
 		});
 
 		if (!notifications) {
