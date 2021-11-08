@@ -15,13 +15,11 @@ router.get(
 		const notifications = await Notification.find({
 			receiver: req.user.id,
 		}).sort({
-			date: -1,
+			date: 'desc',
 		});
 
 		if (!notifications) {
-			return res
-				.status(404)
-				.json({ msg: 'No Notifications found' });
+			return res.json([]);
 		}
 
 		res.json(notifications);

@@ -13,15 +13,18 @@ const NotificationSchema = mongoose.Schema({
 
 	sender: {
 		type: mongoose.Schema.Types.ObjectId,
+		ref:'User',
 	},
 
 	recipient: {
 		type: mongoose.Schema.Types.ObjectId,
+		ref:'User',
 	},
 
 	read: {
 		type: Boolean,
 		required: true,
+		default: false,
 	},
 });
 
