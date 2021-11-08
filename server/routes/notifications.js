@@ -19,9 +19,7 @@ router.get(
 		});
 
 		if (!notifications) {
-			return res
-				.status(404)
-				.json({ msg: 'No Notifications found' });
+			return res.json([]);
 		}
 
 		res.json(notifications);
