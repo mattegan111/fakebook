@@ -24,6 +24,7 @@ const NotificationSchema = mongoose.Schema({
 	read: {
 		type: Boolean,
 		required: true,
+		default: false,
 	},
 });
 
