@@ -127,7 +127,7 @@ router.post(
 		}
 
 		if (comment.likes.includes(ObjectId(req.user.id))) {
-			res.json({ msg: 'You already like this comment' });
+			return res.json({ msg: 'You already like this comment' });
 		}
 
 		comment = await Comment.findByIdAndUpdate(
