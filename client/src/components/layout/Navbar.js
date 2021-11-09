@@ -13,10 +13,10 @@ export const Navbar = ({ title }) => {
 
 Navbar.propTypes = {
     title: PropTypes.string.isRequired,
-}
+};
 
 Navbar.defaultProps = {
     title: 'Fakebook',
-}
+};
 
 export default Navbar;

@@ -8,6 +8,6 @@ const App = () => {
 			My App
 		</div>
 	);
-};
+}
 
 export default App;
