@@ -3,22 +3,27 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Navbar from './components/layout/Navbar';
 import TimelinePage from './components/pages/TimelinePage';
-import ProfilePage from './components/pages/ProfilePage';
+import UserPage from './components/pages/UserPage';
+
+import UserState from './context/user/UserState';
+
 import './App.css';
 
 
 const App = () => {
 	return (
 		<div className='App'>
-			<Router>
-				<Navbar />
-				<Route exact path='/'>
-					<TimelinePage />
-				</Route>
-				<Route path='/:id'>
-					<ProfilePage />
-				</Route>
-			</Router>
+			<UserState>
+				<Router>
+					<Navbar />
+					<Route exact path='/'>
+						<TimelinePage />
+					</Route>
+					<Route path='/:id'>
+						<UserPage />
+					</Route>
+				</Router>
+			</UserState>
 		</div>
 	);
 }
