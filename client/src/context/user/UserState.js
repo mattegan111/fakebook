@@ -1,6 +1,8 @@
 import React, { useReducer } from 'react';
+import axios from 'axios';
 import userContext from './userContext';
 import userReducer from './userReducer';
+import { GET_USER } from '../types';
 
 const UserState = props => {
     const initialState = {
@@ -19,7 +21,20 @@ const UserState = props => {
 
     const [state, dispatch] = useReducer(userReducer, initialState);
 
-    // TODO: Get User
+    // Get User
+    const getUser = async () => {
+        try {
+            const res = await axios.get('/api/auth');
+
+            dispatch({
+                type: GET_USER,
+                payload: res.data
+            });
+        } catch (err) {
+            //TODO handle this better by dispatching with type ERROR
+            throw err;
+        }
+    }
 
     return (
         <userContext.Provider
@@ -35,6 +50,7 @@ const UserState = props => {
             sentfriendrequests: state.sentfriendrequests,
             post: state.post,
             comments: state.comments,
+            getUser 
         }}>
             { props.children }
         </userContext.Provider>
